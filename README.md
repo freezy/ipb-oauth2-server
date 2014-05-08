@@ -1,4 +1,6 @@
 ipb-oauth2-server
 =================
 
-Adds OAuth2 Authentication to IP Board
+Allows other sites to authenticate with an IP.Board user base.
+
+WIP.
