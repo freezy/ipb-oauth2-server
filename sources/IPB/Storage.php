@@ -27,7 +27,7 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 *
 	 * We need to retrieve access token data as we create and verify tokens.
 	 *
-	 * @param $oauth_token oauth_token to be check with.
+	 * @param string $oauth_token OAuth token to be check with.
 	 * @return array
 	 * An associative array as below, and return NULL if the supplied oauth_token
 	 * is invalid:
@@ -40,19 +40,15 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 * @ingroup oauth2_section_7
 	 */
 	public function getAccessToken($oauth_token) {
-		try {
-			$token = $this->db->buildAndFetch(array(
-					'select' => '*',
-					'from' => array('oauth_access_tokens' => 'token'),
-					'where' => 'token.access_token = "' . $oauth_token . '"'
-				)
-			);
-			if ($token) {
-				// convert date string back to timestamp
-				$token['expires'] = strtotime($token['expires']);
-			}
-		} catch (\Exception $e) {
-			return null;
+		$token = $this->db->buildAndFetch(array(
+				'select' => '*',
+				'from' => array('oauth_access_tokens' => 'token'),
+				'where' => 'token.access_token = "' . $oauth_token . '"'
+			)
+		);
+		if ($token) {
+			// convert date string back to timestamp
+			$token['expires'] = strtotime($token['expires']);
 		}
 		return $token;
 	}
@@ -62,21 +58,24 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 *
 	 * We need to store access token data as we create and verify tokens.
 	 *
-	 * @param $oauth_token
-	 * oauth_token to be stored.
-	 * @param $client_id
-	 * Client identifier to be stored.
-	 * @param $user_id
-	 * User identifier to be stored.
-	 * @param int $expires
-	 * Expiration to be stored as a Unix timestamp.
-	 * @param string $scope
-	 * (optional) Scopes to be stored in space-separated string.
+	 * @param string $oauth_token oauth_token to be stored.
+	 * @param string $client_id Client identifier to be stored.
+	 * @param string $user_id User identifier to be stored.
+	 * @param int $expires Expiration to be stored as a Unix timestamp.
+	 * @param string $scope (optional) Scopes to be stored in space-separated string.
 	 *
 	 * @ingroup oauth2_section_4
 	 */
 	public function setAccessToken($oauth_token, $client_id, $user_id, $expires, $scope = null) {
-		// TODO: Implement setAccessToken() method.
+
+		$expires = date('Y-m-d H:i:s', $expires);
+		$token = compact('access_token', 'client_id', 'user_id', 'expires', 'scope');
+		if ($this->getAccessToken($oauth_token)) {
+			$res = $this->db->update('oauth_access_tokens', $token, 'access_token="' . $oauth_token . '"');
+		} else {
+			$res = $this->db->insert('oauth_access_tokens', $token);
+		}
+		return $res;
 	}
 
 	/**
@@ -86,7 +85,7 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 *
 	 * Required for OAuth2::GRANT_TYPE_AUTH_CODE.
 	 *
-	 * @param integer $code Authorization code to be check with.
+	 * @param string $c Authorization code to be check with.
 	 * @return array An associative array as below, and NULL if the code is invalid
 	 * @code
 	 * return array(
@@ -100,8 +99,18 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 * @see http://tools.ietf.org/html/rfc6749#section-4.1
 	 * @ingroup oauth2_section_4
 	 */
-	public function getAuthorizationCode($code) {
-		// TODO: Implement getAuthorizationCode() method.
+	public function getAuthorizationCode($c) {
+		$code = $this->db->buildAndFetch(array(
+				'select' => '*',
+				'from' => array('oauth_authorization_codes' => 'code'),
+				'where' => 'code.authorization_code = "' . $c . '"'
+			)
+		);
+		if ($code) {
+			// convert date string back to timestamp
+			$code['expires'] = strtotime($code['expires']);
+		}
+		return $code;
 	}
 
 	/**
@@ -115,23 +124,47 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 *
 	 * Required for OAuth2::GRANT_TYPE_AUTH_CODE.
 	 *
-	 * @param $code
-	 * Authorization code to be stored.
-	 * @param $client_id
-	 * Client identifier to be stored.
-	 * @param $user_id
-	 * User identifier to be stored.
-	 * @param string $redirect_uri
-	 * Redirect URI(s) to be stored in a space-separated string.
-	 * @param int $expires
-	 * Expiration to be stored as a Unix timestamp.
+	 * @param string $c Authorization code to be stored.
+	 * @param string $client_id Client identifier to be stored.
+	 * @param string $user_id User identifier to be stored.
+	 * @param string $redirect_uri Redirect URI(s) to be stored in a space-separated string.
+	 * @param int $expires Expiration to be stored as a Unix timestamp.
 	 * @param string $scope
 	 * (optional) Scopes to be stored in space-separated string.
 	 *
 	 * @ingroup oauth2_section_4
 	 */
-	public function setAuthorizationCode($code, $client_id, $user_id, $redirect_uri, $expires, $scope = null) {
-		// TODO: Implement setAuthorizationCode() method.
+	public function setAuthorizationCode($c, $client_id, $user_id, $redirect_uri, $expires, $scope = null) {
+		if (func_num_args() > 6) {
+			// we are calling with an id token
+			return call_user_func_array(array($this, 'setAuthorizationCodeWithIdToken'), func_get_args());
+		}
+
+		// convert expires to datestring
+		$expires = date('Y-m-d H:i:s', $expires);
+		$code = compact('c', 'client_id', 'user_id', 'redirect_uri', 'expires', 'scope');
+
+		// if it exists, update it.
+		if ($this->getAuthorizationCode($c)) {
+			$res = $this->db->update('oauth_authorization_codes', $code, 'authorization_code="' . $code . '"');
+		} else {
+			$res = $this->db->insert('oauth_authorization_codes', $code);
+		}
+		return $res;
+	}
+
+	private function setAuthorizationCodeWithIdToken($c, $client_id, $user_id, $redirect_uri, $expires, $scope = null, $id_token = null) {
+		// convert expires to datestring
+		$expires = date('Y-m-d H:i:s', $expires);
+		$code = compact('c', 'client_id', 'user_id', 'redirect_uri', 'expires', 'scope', 'id_token');
+
+		// if it exists, update it.
+		if ($this->getAuthorizationCode($c)) {
+			$res = $this->db->update('oauth_authorization_codes', $code, 'authorization_code="' . $code . '"');
+		} else {
+			$res = $this->db->insert('oauth_authorization_codes', $code);
+		}
+		return $res;
 	}
 
 	/**
