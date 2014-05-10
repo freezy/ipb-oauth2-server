@@ -11,7 +11,6 @@ use OAuth2\Storage\AuthorizationCodeInterface;
 
 class Storage implements AccessTokenInterface, ClientCredentialsInterface, AuthorizationCodeInterface {
 
-
 	/**
 	 * IPB's database interface
 	 * @var interfaceDb
@@ -43,7 +42,7 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 		$token = $this->db->buildAndFetch(array(
 				'select' => '*',
 				'from' => array('oauth_access_tokens' => 'token'),
-				'where' => 'token.access_token = "' . $oauth_token . '"'
+				'where' => 'token.access_token = "' . $oauth_token . '"',
 			)
 		);
 		if ($token) {
@@ -168,7 +167,7 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	}
 
 	/**
-	 * once an Authorization Code is used, it must be exipired
+	 * Once an Authorization Code is used, it must be expired
 	 *
 	 * @see http://tools.ietf.org/html/rfc6749#section-4.1.2
 	 *
@@ -180,23 +179,29 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 *
 	 */
 	public function expireAuthorizationCode($code) {
-		// TODO: Implement expireAuthorizationCode() method.
+		$this->db->delete('oauth_authorization_codes', 'authorization_code="' . $code . '"');
 	}
 
 	/**
 	 * Make sure that the client credentials is valid.
 	 *
-	 * @param $client_id
-	 * Client identifier to be check with.
-	 * @param $client_secret
-	 * (optional) If a secret is required, check that they've given the right one.
-	 *
+	 * @param string $client_id Client identifier to be check with.
+	 * @param string $client_secret (optional) If a secret is required, check that they've given the right one.
 	 * @return boolean TRUE if the client credentials are valid, and MUST return FALSE if it isn't.
 	 * @see http://tools.ietf.org/html/rfc6749#section-3.1
 	 * @ingroup oauth2_section_3
 	 */
 	public function checkClientCredentials($client_id, $client_secret = null) {
-		// TODO: Implement checkClientCredentials() method.
+
+		$client = $this->db->buildAndFetch(array(
+				'select' => '*',
+				'from' => array('oauth_clients' => 'client'),
+				'where' => 'client.client_id = "' . $client_id . '"'
+			)
+		);
+
+		// make this extensible
+		return $client && $client['client_secret'] == $client_secret;
 	}
 
 	/**
@@ -213,7 +218,18 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 * @ingroup oauth2_section_2
 	 */
 	public function isPublicClient($client_id) {
-		// TODO: Implement isPublicClient() method.
+
+		$client = $this->db->buildAndFetch(array(
+				'select' => '*',
+				'from' => array('oauth_clients' => 'client'),
+				'where' => 'client.client_id = "' . $client_id . '"'
+			)
+		);
+
+		if (!$client) {
+			return false;
+		}
+		return empty($client['client_secret']);
 	}
 
 	/**
@@ -222,13 +238,11 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 * OAuth says we should store request URIs for each registered client.
 	 * Implement this function to grab the stored URI for a given client id.
 	 *
-	 * @param $client_id
-	 * Client identifier to be check with.
+	 * @param string $client_id Client identifier to be check with.
 	 *
-	 * @return array
-	 * Client details. The only mandatory key in the array is "redirect_uri".
-	 * This function MUST return FALSE if the given client does not exist or is
-	 * invalid. "redirect_uri" can be space-delimited to allow for multiple valid uris.
+	 * @return array Client details. The only mandatory key in the array is "redirect_uri".
+	 *     This function MUST return FALSE if the given client does not exist or is
+	 *      invalid. "redirect_uri" can be space-delimited to allow for multiple valid uris.
 	 * @code
 	 * return array(
 	 *     "redirect_uri" => REDIRECT_URI,      // REQUIRED redirect_uri registered for the client
@@ -241,7 +255,12 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 * @ingroup oauth2_section_4
 	 */
 	public function getClientDetails($client_id) {
-		// TODO: Implement getClientDetails() method.
+		return $this->db->buildAndFetch(array(
+				'select' => '*',
+				'from' => array('oauth_clients' => 'client'),
+				'where' => 'client.client_id = "' . $client_id . '"'
+			)
+		);
 	}
 
 	/**
@@ -251,7 +270,13 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 * @return string the space-delineated scope list for the specified client_id
 	 */
 	public function getClientScope($client_id) {
-		// TODO: Implement getClientScope() method.
+		if (!$clientDetails = $this->getClientDetails($client_id)) {
+			return false;
+		}
+		if (isset($clientDetails['scope'])) {
+			return $clientDetails['scope'];
+		}
+		return null;
 	}
 
 	/**
@@ -269,6 +294,13 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 * @ingroup oauth2_section_4
 	 */
 	public function checkRestrictedGrantType($client_id, $grant_type) {
-		// TODO: Implement checkRestrictedGrantType() method.
+		$details = $this->getClientDetails($client_id);
+		if (isset($details['grant_types'])) {
+			$grant_types = explode(' ', $details['grant_types']);
+
+			return in_array($grant_type, (array) $grant_types);
+		}
+		// if grant_types are not defined, then none are restricted
+		return true;
 	}
 }

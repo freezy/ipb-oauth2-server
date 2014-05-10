@@ -2,8 +2,7 @@
 <information>
 	<data>
 		<name>OAuth2 Server</name>
-		<public_name>OAuth2 Server
-		</public_name>
+		<public_name>OAuth2 Server</public_name>
 		<hide_tab>1</hide_tab>
 		<author>freezy</author>
 		<description>Allows other sites to authenticate with IP.Board users.</description>
