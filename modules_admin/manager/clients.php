@@ -15,10 +15,12 @@ class admin_oauth2_manager_clients extends ipsCommand {
 
 	public function doExecute(ipsRegistry $registry) {
 
+		//$this->registry->getClass('class_localization')->loadLanguageFile(array('admin_global'), 'oauth2');
+		$this->lang->loadLanguageFile(array('admin_lang'), 'oauth2');
 		$this->html = $this->registry->output->loadTemplate('cp_skin_oauth2');
 
-		$this->form_code	= $this->html->form_code	= 'module=manager&amp;section=clients';
-		$this->form_code_js	= $this->html->form_code_js	= 'module=manager&section=clients';
+		$this->form_code = $this->html->form_code = 'module=manager&amp;section=clients';
+		$this->form_code_js = $this->html->form_code_js = 'module=manager&section=clients';
 
 		/*
 		 * seriously, this is pathetic. doc[1][2] clearly says to use output::addContent(),

@@ -12,7 +12,7 @@ $IPBHTML = "";
 
 $IPBHTML .= <<<EOF
 <div class='section_title'>
-	<h2>OAuth2 Clients</h2>
+	<h2>{$this->lang->words['o_clients']}</h2>
 	<div class='ipsActionBar clearfix'>
 		<ul>
 			<li class='ipsActionButton'>
@@ -23,13 +23,13 @@ $IPBHTML .= <<<EOF
 </div>
 
 <div class='acp-box'>
-	<h3>OAuth2 Clients</h3>
+	<h3>{$this->lang->words['o_clients']}</h3>
 
 	<table class='ipsTable'>
 		<tr>
-			<th width='40%'>Application Name</th>
-			<th width='30%'>URL</th>
-			<th width='20%'>Users</th>
+			<th width='40%'>{$this->lang->words['o_client_name']}</th>
+			<th width='30%'>{$this->lang->words['o_client_url']}</th>
+			<th width='20%'>{$this->lang->words['o_client_numusers']}</th>
 		</tr>
 EOF;
 
@@ -61,7 +61,7 @@ EOF;
 $IPBHTML .= <<<EOF
 		<tr>
 			<td colspan='5' class='no_messages'>
-				{$this->lang->words['a_nousers']} <a href='{$this->settings['base_url']}&amp;{$this->form_code}&amp;do=api_add' class='mini_button'>{$this->lang->words['a_createone']}</a>
+				{$this->lang->words['o_no_clients']} <a href='{$this->settings['base_url']}&amp;{$this->form_code}&amp;do=api_add' class='mini_button'>{$this->lang->words['o_new_client']}</a>
 			</td>
 		 </tr>
 EOF;
