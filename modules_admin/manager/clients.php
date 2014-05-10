@@ -8,11 +8,10 @@ if (!defined('IN_ACP')) {
 
 class admin_oauth2_manager_clients extends ipsCommand {
 
-	/** @var skin_oauth2 */
+	/** @var cp_skin_oauth2 */
 	protected $html;
 	protected $form_code;
 	protected $form_code_js;
-
 
 	public function doExecute(ipsRegistry $registry) {
 
@@ -28,7 +27,6 @@ class admin_oauth2_manager_clients extends ipsCommand {
 		 * [1] http://www.invisionpower.com/support/guides/_/advanced-and-developers/application/using-skin-templates-r154
 		 * [2] http://www.invisionpower.com/support/guides/_/advanced-and-developers/api-methods/outputting-html-r194
 		 */
-//		$this->registry->output->html_main .= $this->registry->output->getTemplate('oauth2')->listClients(array());
 		$this->registry->output->html .= $this->html->listClients(array());
 
 		$this->registry->output->html_main .= $this->registry->getClass('output')->global_template->global_frame_wrapper();

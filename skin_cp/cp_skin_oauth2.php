@@ -10,8 +10,6 @@ function listClients($oauthClients) {
 $IPBHTML = "";
 //--starthtml--//
 
-$status = $this->settings['xmlrpc_enable'] ? "<span class='ipsBadge badge_green'>{$this->lang->words['perf_on']}</span>" : "<a href='{$this->settings['base_url']}&amp;module=settings&amp;section=settings&amp;do=setting_view&amp;conf_title_keyword=xmlrpcapi'><span class='ipsBadge badge_red'>{$this->lang->words['perf_off']}</span></a>";
-
 $IPBHTML .= <<<EOF
 <div class='section_title'>
 	<h2>OAuth2 Clients</h2>
