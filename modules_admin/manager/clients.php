@@ -47,6 +47,21 @@ class admin_oauth2_manager_clients extends ipsCommand {
 	}
 
 	private function ls() {
+
+		$clients = array();
+
+		//-----------------------------------------
+		// Get users from the DB
+		//-----------------------------------------
+
+		$this->DB->build(array('select' => '*', 'from' => 'oauth_clients', 'order' => 'api_user_id'));
+		$this->DB->execute();
+
+		while ($row = $this->DB->fetch()) {
+			$clients[] = $row;
+		}
+
+
 		return $this->html->listClients(array());
 	}
 
@@ -79,8 +94,9 @@ class admin_oauth2_manager_clients extends ipsCommand {
 		$form['client_name'] = $this->registry->output->formInput('client_name', !empty($_POST['client_name']) ? stripslashes($_POST['client_name']) : $client['client_name']);
 		$form['client_url'] = $this->registry->output->formInput('client_url', !empty($_POST['client_url']) ? stripslashes($_POST['client_url']) : $client['client_url']);
 		$form['homepage_uri'] = $this->registry->output->formInput('homepage_uri', !empty($_POST['homepage_uri']) ? stripslashes($_POST['homepage_uri']) : $client['homepage_uri']);
-		$form['redirect_uri'] = $this->registry->output->formInput('redirect_uri', !empty($_POST['redirect_uri']) ? stripslashes($_POST['redirect_uri']) : $client['redirect_uri']);
+		$form['homepage_logo'] = $this->registry->output->formInput('homepage_logo', !empty($_POST['homepage_logo']) ? stripslashes($_POST['homepage_logo']) : $client['homepage_logo']);
 		$form['homepage_description'] = $this->registry->output->formTextarea('homepage_description', !empty($_POST['homepage_description']) ? stripslashes($_POST['homepage_description']) : $client['homepage_description']);
+		$form['redirect_uri'] = $this->registry->output->formInput('redirect_uri', !empty($_POST['redirect_uri']) ? stripslashes($_POST['redirect_uri']) : $client['redirect_uri']);
 
 		if ($type == 'add') {
 			$form['_client_id'] = substr(md5(mt_rand() . $this->memberData['member_login_key'] . uniqid(mt_rand(), true)), 0, 20);
@@ -109,6 +125,7 @@ class admin_oauth2_manager_clients extends ipsCommand {
 		$client_name = $this->request['client_name'];
 		$homepage_uri = $this->request['homepage_uri'];
 		$homepage_description = $this->request['homepage_description'];
+		$homepage_logo = $this->request['homepage_logo'];
 		$redirect_uri = $this->request['redirect_uri'];
 
 		// validatons
@@ -142,7 +159,7 @@ class admin_oauth2_manager_clients extends ipsCommand {
 		$save = array(
 			'redirect_uri' => $redirect_uri,
 			'grant_types' => '',
-			'scope' => '',
+			'scope' => 'user.email user.profile',
 			'user_id' => $this->memberData['member_id'],
 		);
 
