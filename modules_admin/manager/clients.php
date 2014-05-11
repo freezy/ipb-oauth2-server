@@ -131,9 +131,9 @@ class admin_oauth2_manager_clients extends ipsCommand {
 				return $this->form($type);
 			}
 		} else {
-			$api_user = $this->DB->buildAndFetch(array('select' => '*', 'from' => 'api_users', 'where' => 'api_user_id=' . $api_user_id));
+			$client = $this->DB->buildAndFetch(array('select' => '*', 'from' => 'oauth_clients', 'where' => 'client_id="' . $client_id . '"'));
 
-			if (!$api_user['api_user_id']) {
+			if (!$client['client_id']) {
 				$this->registry->output->global_message = $this->lang->words['a_user404'];
 				return $this->ls();
 			}
