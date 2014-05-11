@@ -27,9 +27,9 @@ $IPBHTML .= <<<EOF
 
 	<table class='ipsTable'>
 		<tr>
-			<th width='40%'>{$this->lang->words['o_client_name']}</th>
+			<th width='30%'>{$this->lang->words['o_client_name']}</th>
+			<th width='30%'>{$this->lang->words['o_client_id']}</th>
 			<th width='30%'>{$this->lang->words['o_client_url']}</th>
-			<th width='20%'>{$this->lang->words['o_client_numusers']}</th>
 			<th class='col_buttons'></th>
 		</tr>
 EOF;
@@ -39,8 +39,8 @@ EOF;
 $IPBHTML .= <<<EOF
 		<tr class='ipsControlRow'>
 			<td><strong>{$client['client_name']}</strong>
+			<td><strong style='font-size:14px'>{$client['client_id']}</strong>
 			<td><strong style='font-size:14px'>{$client['homepage_uri']}</strong>
-			<td><strong>-</strong>
 			<td class='col_buttons'>
 				<ul class='ipsControlStrip'>
 					<li class='i_edit'><a href='{$this->settings['base_url']}&amp;{$this->form_code}&amp;do=update&amp;client_id={$client['client_id']}'>{$this->lang->words['o_edit']}</a></li>

@@ -185,8 +185,8 @@ class admin_oauth2_manager_clients extends ipsCommand {
 			$save['client_id'] = $client_id;
 			$save['client_secret'] = $client_secret;
 			$save['scope'] = 'user.email user.profile';
-			$save['user_id'] = $this->memberData['member_id'];
-			$save['grant_types'] = 'grant_types';
+			$save['member_id'] = intval($this->memberData['member_id']);
+			$save['grant_types'] = 'authorization_code implicit';
 
 			$this->registry->output->global_message = $this->lang->words['o_created'];
 			$this->DB->insert('oauth_clients', $save);

@@ -7,7 +7,6 @@ class public_oauth2_server_authorize extends ipsCommand {
 
 	public function doExecute(ipsRegistry $registry) {
 
-
 		// enforce login
 		if (!$this->memberData['member_id']) {
 			$this->registry->output->silentRedirect($this->settings['base_url'] . 'app=core&module=global&section=login&referer=' . urlencode('?' . $this->settings['query_string_real']));
@@ -37,17 +36,17 @@ class public_oauth2_server_authorize extends ipsCommand {
 
 		// display an authorization form
 		if (empty($_POST)) {
-			exit('
-<form method="post">
-  <label>Do You Authorize TestClient?</label><br />
-  <input type="submit" name="authorized" value="yes">
-  <input type="submit" name="authorized" value="no">
-</form>');
+			$client = $storage->getClientDetails($this->request['client_id']);
+			$this->registry->output->setTitle("Authorize Application");
+			$this->registry->output->addNavigation("Authorize Application", NULL);
+			$this->registry->output->addContent($this->registry->output->getTemplate('oauth2')->authorize($client));
+			$this->registry->output->sendOutput();
+			exit;
 		}
 
 		// print the authorization code if the user has authorized your client
-		$is_authorized = ($_POST['authorized'] === 'yes');
-		$server->handleAuthorizeRequest($request, $response, $is_authorized);
+		$is_authorized = ($_POST['authorized'] === 'Authorize Application');
+		$server->handleAuthorizeRequest($request, $response, $is_authorized, $this->memberData['member_id']);
 		if ($is_authorized) {
 			// this is only here so that you get to see your code in the cURL request. Otherwise, we'd redirect back to the client
 			$code = substr($response->getHttpHeader('Location'), strpos($response->getHttpHeader('Location'), 'code=') + 5, 40);

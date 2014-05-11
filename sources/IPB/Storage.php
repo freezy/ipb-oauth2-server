@@ -32,7 +32,7 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 * is invalid:
 	 * - expires: Stored expiration in unix timestamp.
 	 * - client_id: (optional) Stored client identifier.
-	 * - user_id: (optional) Stored user identifier.
+	 * - user_id: Stored user identifier.
 	 * - scope: (optional) Stored scope values in space-separated string.
 	 * - id_token: (optional) Stored id_token (if "use_openid_connect" is true).
 	 *
@@ -59,7 +59,7 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 *
 	 * @param string $oauth_token oauth_token to be stored.
 	 * @param string $client_id Client identifier to be stored.
-	 * @param string $user_id User identifier to be stored.
+	 * @param int $user_id User identifier to be stored.
 	 * @param int $expires Expiration to be stored as a Unix timestamp.
 	 * @param string $scope (optional) Scopes to be stored in space-separated string.
 	 *
@@ -68,7 +68,8 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	public function setAccessToken($oauth_token, $client_id, $user_id, $expires, $scope = null) {
 
 		$expires = date('Y-m-d H:i:s', $expires);
-		$token = compact('access_token', 'client_id', 'user_id', 'expires', 'scope');
+		$member_id = intval($user_id);
+		$token = compact('access_token', 'client_id', 'member_id', 'expires', 'scope');
 		if ($this->getAccessToken($oauth_token)) {
 			$res = $this->db->update('oauth_access_tokens', $token, 'access_token="' . $oauth_token . '"');
 		} else {
@@ -123,9 +124,9 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 *
 	 * Required for OAuth2::GRANT_TYPE_AUTH_CODE.
 	 *
-	 * @param string $c Authorization code to be stored.
+	 * @param string $authorization_code Authorization code to be stored.
 	 * @param string $client_id Client identifier to be stored.
-	 * @param string $user_id User identifier to be stored.
+	 * @param int $user_id User identifier to be stored.
 	 * @param string $redirect_uri Redirect URI(s) to be stored in a space-separated string.
 	 * @param int $expires Expiration to be stored as a Unix timestamp.
 	 * @param string $scope
@@ -133,7 +134,7 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 *
 	 * @ingroup oauth2_section_4
 	 */
-	public function setAuthorizationCode($c, $client_id, $user_id, $redirect_uri, $expires, $scope = null) {
+	public function setAuthorizationCode($authorization_code, $client_id, $user_id, $redirect_uri, $expires, $scope = null) {
 		if (func_num_args() > 6) {
 			// we are calling with an id token
 			return call_user_func_array(array($this, 'setAuthorizationCodeWithIdToken'), func_get_args());
@@ -141,10 +142,11 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 
 		// convert expires to datestring
 		$expires = date('Y-m-d H:i:s', $expires);
-		$code = compact('c', 'client_id', 'user_id', 'redirect_uri', 'expires', 'scope');
+		$member_id = intval($user_id);
+		$code = compact('authorization_code', 'client_id', 'member_id', 'redirect_uri', 'expires', 'scope');
 
 		// if it exists, update it.
-		if ($this->getAuthorizationCode($c)) {
+		if ($this->getAuthorizationCode($authorization_code)) {
 			$res = $this->db->update('oauth_authorization_codes', $code, 'authorization_code="' . $code . '"');
 		} else {
 			$res = $this->db->insert('oauth_authorization_codes', $code);
@@ -154,8 +156,9 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 
 	private function setAuthorizationCodeWithIdToken($c, $client_id, $user_id, $redirect_uri, $expires, $scope = null, $id_token = null) {
 		// convert expires to datestring
+		$member_id = intval($user_id);
 		$expires = date('Y-m-d H:i:s', $expires);
-		$code = compact('c', 'client_id', 'user_id', 'redirect_uri', 'expires', 'scope', 'id_token');
+		$code = compact('c', 'client_id', 'member_id', 'redirect_uri', 'expires', 'scope', 'id_token');
 
 		// if it exists, update it.
 		if ($this->getAuthorizationCode($c)) {
