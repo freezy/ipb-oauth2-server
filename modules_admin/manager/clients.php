@@ -62,10 +62,17 @@ class admin_oauth2_manager_clients extends ipsCommand {
 			);
 			$formcode = 'add_save';
 			$client = array();
+
+		// edit
+		} else {
+
 		}
 
 		$form['client_name'] = $this->registry->output->formInput('client_name', !empty($_POST['client_name']) ? stripslashes($_POST['client_name']) : $client['client_name']);
 		$form['client_url'] = $this->registry->output->formInput('client_url', !empty($_POST['client_url']) ? stripslashes($_POST['client_url']) : $client['client_url']);
+		$form['homepage_uri'] = $this->registry->output->formInput('homepage_uri', !empty($_POST['homepage_uri']) ? stripslashes($_POST['homepage_uri']) : $client['homepage_uri']);
+		$form['redirect_uri'] = $this->registry->output->formInput('redirect_uri', !empty($_POST['redirect_uri']) ? stripslashes($_POST['redirect_uri']) : $client['redirect_uri']);
+		$form['homepage_description'] = $this->registry->output->formTextarea('homepage_description', !empty($_POST['homepage_description']) ? stripslashes($_POST['homepage_description']) : $client['homepage_description']);
 
 		if ($type == 'add') {
 			$form['_client_id'] = substr(md5(mt_rand() . $this->memberData['member_login_key'] . uniqid(mt_rand(), true)), 0, 20);

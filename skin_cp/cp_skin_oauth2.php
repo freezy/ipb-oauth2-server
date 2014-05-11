@@ -87,9 +87,7 @@ $IPBHTML .= <<<EOF
 	<h2>{$lang['title']}</h2>
 	<div class='clearfix'></div>
 </div>
-<div class="section_info">
-	You may create API users for use with the XML-RPC system which allows other applications to access IP.Board data
-</div>
+<div class="section_info">{$this->lang->words['o_create_info']}</div>
 
 <form id='mainform' action='{$this->settings['base_url']}{$this->form_code}&amp;do={$formcode}&amp;client={$api_user['client_id']}' method='post'>
 	<div class='acp-box'>
@@ -127,20 +125,37 @@ EOF;
 $IPBHTML .= <<<EOF
 			<tr>
 				<td class='field_title'>
-					<strong class='title'>{$this->lang->words['a_usertitle']}</strong>
+					<strong class='title'>{$this->lang->words['o_client_name']}</strong>
 				</td>
 				<td class='field_field'>
-					{$form['api_user_name']}<br />
-					<span class='desctext'>{$this->lang->words['a_usertitle_info']}</span>
+					{$form['client_name']}<br />
+					<span class='desctext'>{$this->lang->words['o_client_name_info']}</span>
 				</td>
 			</tr>
 			<tr>
 				<td class='field_title'>
-					<strong class='title'>{$this->lang->words['a_restrictip']}</strong>
+					<strong class='title'>{$this->lang->words['o_homepage_uri']}</strong>
 				</td>
 				<td class='field_field'>
-					{$form['api_user_ip']}<br />
-					<span class='desctext'>{$this->lang->words['a_restrictip_info']}</span>
+					{$form['homepage_uri']}<br />
+					<span class='desctext'>{$this->lang->words['o_homepage_uri_info']}</span>
+				</td>
+			</tr>
+				<td class='field_title'>
+					<strong class='title'>{$this->lang->words['o_homepage_description']}</strong>
+				</td>
+				<td class='field_field'>
+					{$form['homepage_description']}<br />
+					<span class='desctext'>{$this->lang->words['o_homepage_description_info']}</span>
+				</td>
+			</tr>
+			<tr>
+				<td class='field_title'>
+					<strong class='title'>{$this->lang->words['o_redirect_uri']}</strong>
+				</td>
+				<td class='field_field'>
+					{$form['redirect_uri']}<br />
+					<span class='desctext'>{$this->lang->words['o_redirect_uri_info']}</span>
 				</td>
 			</tr>
 			<tr>
@@ -151,8 +166,12 @@ EOF;
 
 
 $IPBHTML .= <<<EOF
-			</ul>
+		</ul>
+
+		<div class='acp-actionbar'>
+			<input type='submit' value='{$lang['button']}' class='button primary' />
 		</div>
+	</div>
 EOF;
 
 
