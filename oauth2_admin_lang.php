@@ -34,4 +34,6 @@ $lang = array(
 	'o_edit' => 'Edit',
 	'o_delete' => 'Delete',
 	'o_client404' => 'Could not find client for given client_id.',
+	'o_whatclient'=> 'You must provide a Client ID.',
+	'o_deleted'=> 'Client has successfully been deleted.',
 );

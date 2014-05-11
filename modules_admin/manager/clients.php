@@ -34,6 +34,9 @@ class admin_oauth2_manager_clients extends ipsCommand {
 			case 'save_update':
 				$html = $this->save('update');
 				break;
+			case 'delete':
+				$html = $this->delete();
+				break;
 			case 'list':
 			default:
 				$html = $this->ls();
@@ -192,6 +195,33 @@ class admin_oauth2_manager_clients extends ipsCommand {
 			$this->DB->update('oauth_clients', $save, 'client_id="' . $client_id . '"');
 		}
 		$this->registry->output->silentRedirectWithMessage($this->settings['base_url'] . $this->form_code);
+		return $this->ls();
+	}
+
+	/**
+	 * Deletes a client.
+	 *
+	 * @return string
+	 */
+	private function delete() {
+
+		$client_id = $this->request['client_id'];
+
+		if (!$client_id) {
+			$this->registry->output->global_message = $this->lang->words['o_whatclient'];
+			return $this->ls();
+		}
+
+		$client = $this->DB->buildAndFetch(array('select' => '*', 'from' => 'oauth_clients', 'where' => 'client_id="' . $client_id . '"'));
+
+		if (!$client['client_id']) {
+			$this->registry->output->global_message = $this->lang->words['o_client404'];
+			return $this->ls();
+		}
+
+		$this->DB->delete('oauth_clients', 'client_id="' . $client_id . '"');
+
+		$this->registry->output->global_message = $this->lang->words['o_deleted'];
 		return $this->ls();
 	}
 }
