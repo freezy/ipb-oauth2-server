@@ -106,7 +106,7 @@ $IPBHTML .= <<<EOF
 					<strong class='title'>{$this->lang->words['o_client_id']}</strong>
 				</td>
 				<td class='field_field'>
-					<input type='hidden' name='api_user_key' value='{$form['_client_id']}' />
+					<input type='hidden' name='_client_id' value='{$form['_client_id']}' />
 					<strong>{$form['_client_id']}</strong><br />
 				</td>
 			</tr>
@@ -115,7 +115,7 @@ $IPBHTML .= <<<EOF
 					<strong class='title'>{$this->lang->words['o_client_secret']}</strong>
 				</td>
 				<td class='field_field'>
-					<input type='hidden' name='api_user_key' value='{$form['_client_secret']}' />
+					<input type='hidden' name='_client_secret' value='{$form['_client_secret']}' />
 					<strong>{$form['_client_secret']}</strong><br />
 				</td>
 			</tr>

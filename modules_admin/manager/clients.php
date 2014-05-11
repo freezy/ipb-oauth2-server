@@ -23,11 +23,14 @@ class admin_oauth2_manager_clients extends ipsCommand {
 
 		switch ($this->request['do']) {
 			case 'create':
-				$html = $this->createClient();
+				$html = $this->form('add');
+				break;
+			case 'save_create':
+				$html = $this->save('add');
 				break;
 			case 'list':
 			default:
-				$html = $this->html->listClients(array());
+				$html = $this->ls();
 				break;
 		}
 
@@ -43,10 +46,15 @@ class admin_oauth2_manager_clients extends ipsCommand {
 		$this->registry->output->sendOutput();
 	}
 
-	private function createClient() {
-		return $this->form('add');
+	private function ls() {
+		return $this->html->listClients(array());
 	}
 
+	/**
+	 * Displays the edit and creation form for an OAuth2 client.
+	 * @param string $type "add" or "update", depending on action.
+	 * @return string Form markup
+	 */
 	private function form($type = 'add') {
 
 		$client_id = $this->request['client_id'];
@@ -60,10 +68,10 @@ class admin_oauth2_manager_clients extends ipsCommand {
 				'button' => $this->lang->words['o_create'],
 				'info' => $this->lang->words['o_create_info'],
 			);
-			$formcode = 'add_save';
+			$formcode = 'save_create';
 			$client = array();
 
-		// edit
+			// edit
 		} else {
 
 		}
@@ -83,5 +91,73 @@ class admin_oauth2_manager_clients extends ipsCommand {
 		$html .= $this->html->form($form, $lang, $formcode, $client, $type);
 
 		return $html;
+	}
+
+	/**
+	 * Saves posted data for either adding or creating a new OAuth2 client.
+	 *
+	 * @param string $type Either "add" or "update", depending on action
+	 * @return string Markup of next page.
+	 */
+	private function save($type = 'add') {
+
+		// form data keys: _client_id, _client_secret, client_name, homepage_uri,
+		//                 homepage_description, redirect_uri
+
+		$client_id = $this->request['_client_id'];
+		$client_secret = $this->request['_client_secret'];
+		$client_name = $this->request['client_name'];
+		$homepage_uri = $this->request['homepage_uri'];
+		$homepage_description = $this->request['homepage_description'];
+		$redirect_uri = $this->request['redirect_uri'];
+
+		// validatons
+		if (!$client_name) {
+			$this->registry->output->global_message = $this->lang->words['o_please_enter_name'];
+			return $this->form($type);
+		}
+
+		if ($type == 'add') {
+			if (!$client_id) {
+				$this->registry->output->global_message = $this->lang->words['o_no_id'];
+				return $this->form($type);
+			}
+			if (!$client_name) {
+				$this->registry->output->global_message = $this->lang->words['o_no_secret'];
+				return $this->form($type);
+			}
+			if (!$redirect_uri) {
+				$this->registry->output->global_message = $this->lang->words['o_no_redirect'];
+				return $this->form($type);
+			}
+		} else {
+			$api_user = $this->DB->buildAndFetch(array('select' => '*', 'from' => 'api_users', 'where' => 'api_user_id=' . $api_user_id));
+
+			if (!$api_user['api_user_id']) {
+				$this->registry->output->global_message = $this->lang->words['a_user404'];
+				return $this->ls();
+			}
+		}
+
+		$save = array(
+			'redirect_uri' => $redirect_uri,
+			'grant_types' => '',
+			'scope' => '',
+			'user_id' => $this->memberData['member_id'],
+		);
+
+		if ($type == 'add') {
+
+			$save['client_id'] = $client_id;
+			$save['client_secret'] = $client_secret;
+
+			$this->registry->output->global_message = $this->lang->words['o_created'];
+			$this->DB->insert('oauth_clients', $save);
+		} else {
+			$this->registry->output->global_message = $this->lang->words['o_updated'];
+			$this->DB->update('oauth_clients', $save, 'client_id="' . $client_id . '"');
+		}
+		$this->registry->output->silentRedirectWithMessage($this->settings['base_url'] . $this->form_code);
+		return $this->ls();
 	}
 }
