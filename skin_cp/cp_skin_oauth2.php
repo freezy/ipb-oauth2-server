@@ -5,7 +5,7 @@ class cp_skin_oauth2 extends output {
 //===========================================================================
 // <ips:template:desc::trigger:>
 //===========================================================================
-function listClients($oauthClients) {
+function listClients($clients) {
 
 $IPBHTML = "";
 //--starthtml--//
@@ -30,28 +30,21 @@ $IPBHTML .= <<<EOF
 			<th width='40%'>{$this->lang->words['o_client_name']}</th>
 			<th width='30%'>{$this->lang->words['o_client_url']}</th>
 			<th width='20%'>{$this->lang->words['o_client_numusers']}</th>
+			<th class='col_buttons'></th>
 		</tr>
 EOF;
 
-		if (count($oauthClients)) {
-			foreach ($oauthClients as $user) {
+		if (count($clients)) {
+			foreach ($clients as $client) {
 $IPBHTML .= <<<EOF
 		<tr class='ipsControlRow'>
-			<td><strong>{$user['api_user_name']}</strong>
-			<td><strong style='font-size:14px'>{$user['api_user_key']}</strong>
-			<td><strong>{$user['api_user_ip']}</strong>
+			<td><strong>{$client['client_name']}</strong>
+			<td><strong style='font-size:14px'>{$client['homepage_uri']}</strong>
+			<td><strong>-</strong>
 			<td class='col_buttons'>
 				<ul class='ipsControlStrip'>
-					<li class='i_edit'><a href='{$this->settings['base_url']}&amp;{$this->form_code}&amp;do=api_edit&amp;api_user_id={$user['api_user_id']}'>{$this->lang->words['a_edit']}</a></li>
-EOF;
-
-				if ($this->registry->class_permissions->checkPermission( 'api_remove' )) {
-$IPBHTML .= <<<EOF
-					<li class='i_delete'><a href='#' onclick='return acp.confirmDelete("{$this->settings['base_url']}&amp;{$this->form_code}&amp;do=api_remove&amp;api_user_id={$user['api_user_id']}");'>{$this->lang->words['a_remove']}</a></li>
-EOF;
-				}
-
-$IPBHTML .= <<<EOF
+					<li class='i_edit'><a href='{$this->settings['base_url']}&amp;{$this->form_code}&amp;do=update&amp;client_id={$client['client_id']}'>{$this->lang->words['o_edit']}</a></li>
+					<li class='i_delete'><a href='#' onclick='return acp.confirmDelete("{$this->settings['base_url']}&amp;{$this->form_code}&amp;do=delete&amp;client_id={$client['client_id']}");'>{$this->lang->words['o_delete']}</a></li>
 				</ul>
 			</td>
 		</tr>
@@ -76,7 +69,7 @@ EOF;
 return $IPBHTML;
 }
 
-function form( $form, $lang, $formcode, $client, $type) {
+function form($form, $lang, $formcode, $client, $type) {
 
 $IPBHTML = "";
 //--starthtml--//
@@ -97,10 +90,6 @@ $IPBHTML .= <<<EOF
 			<tr>
 				<th colspan='2'>{$this->lang->words['a_userbasics']}</th>
 			</tr>
-EOF;
-
-		if ($type == 'add') {
-$IPBHTML .= <<<EOF
 			<tr>
 				<td class='field_title'>
 					<strong class='title'>{$this->lang->words['o_client_id']}</strong>
@@ -119,10 +108,6 @@ $IPBHTML .= <<<EOF
 					<strong>{$form['_client_secret']}</strong><br />
 				</td>
 			</tr>
-EOF;
-		}
-
-$IPBHTML .= <<<EOF
 			<tr>
 				<td class='field_title'>
 					<strong class='title'>{$this->lang->words['o_client_name']}</strong>
@@ -139,6 +124,15 @@ $IPBHTML .= <<<EOF
 				<td class='field_field'>
 					{$form['homepage_uri']}<br />
 					<span class='desctext'>{$this->lang->words['o_homepage_uri_info']}</span>
+				</td>
+			</tr>
+			<tr>
+				<td class='field_title'>
+					<strong class='title'>{$this->lang->words['o_homepage_logo']}</strong>
+				</td>
+				<td class='field_field'>
+					{$form['homepage_logo']}<br />
+					<span class='desctext'>{$this->lang->words['o_homepage_logo_info']}</span>
 				</td>
 			</tr>
 				<td class='field_title'>
