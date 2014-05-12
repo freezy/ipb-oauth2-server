@@ -1,9 +1,9 @@
 <?php
 
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'sources' . DIRECTORY_SEPARATOR . 'IPB' . DIRECTORY_SEPARATOR . 'Storage.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'sources' . DIRECTORY_SEPARATOR . 'IPB' . DIRECTORY_SEPARATOR . 'Server.php';
 
 class public_oauth2_server_authorize extends ipsCommand {
-
 
 	public function doExecute(ipsRegistry $registry) {
 
@@ -13,17 +13,9 @@ class public_oauth2_server_authorize extends ipsCommand {
 			return;
 		}
 
-		// setup storage
-		$storage = new IPB\Storage($this->DB);
-
-		// setup server
-		$server = new OAuth2\Server($storage);
-
-		// add the "client credentials" grant type (it is the simplest of the grant types)
-		$server->addGrantType(new OAuth2\GrantType\ClientCredentials($storage));
-
-		// add the "authorization code" grant type (this is where the oauth magic happens)
-		$server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage));
+		// setup storage and server
+		$storage = new IPB\Storage($this->DB, $this->memberData['member_id']);
+		$server = IPB\Server::createServer($storage);
 
 		$request = OAuth2\Request::createFromGlobals();
 		$response = new OAuth2\Response();
@@ -47,11 +39,6 @@ class public_oauth2_server_authorize extends ipsCommand {
 		// print the authorization code if the user has authorized your client
 		$is_authorized = ($_POST['authorized'] === 'Authorize Application');
 		$server->handleAuthorizeRequest($request, $response, $is_authorized, $this->memberData['member_id']);
-		if ($is_authorized) {
-			// this is only here so that you get to see your code in the cURL request. Otherwise, we'd redirect back to the client
-			$code = substr($response->getHttpHeader('Location'), strpos($response->getHttpHeader('Location'), 'code=') + 5, 40);
-			exit("SUCCESS! Authorization Code: $code");
-		}
 		$response->send();
 	}
 }

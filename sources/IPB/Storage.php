@@ -8,8 +8,9 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATO
 use OAuth2\Storage\AccessTokenInterface;
 use OAuth2\Storage\ClientCredentialsInterface;
 use OAuth2\Storage\AuthorizationCodeInterface;
+use OAuth2\Storage\RefreshTokenInterface;
 
-class Storage implements AccessTokenInterface, ClientCredentialsInterface, AuthorizationCodeInterface {
+class Storage implements AccessTokenInterface, ClientCredentialsInterface, AuthorizationCodeInterface, RefreshTokenInterface {
 
 	/**
 	 * IPB's database interface
@@ -35,8 +36,6 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 * - user_id: Stored user identifier.
 	 * - scope: (optional) Stored scope values in space-separated string.
 	 * - id_token: (optional) Stored id_token (if "use_openid_connect" is true).
-	 *
-	 * @ingroup oauth2_section_7
 	 */
 	public function getAccessToken($oauth_token) {
 		$token = $this->db->buildAndFetch(array(
@@ -48,6 +47,7 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 		if ($token) {
 			// convert date string back to timestamp
 			$token['expires'] = strtotime($token['expires']);
+			$token['user_id'] = $token['member_id'];
 		}
 		return $token;
 	}
@@ -57,25 +57,22 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 *
 	 * We need to store access token data as we create and verify tokens.
 	 *
-	 * @param string $oauth_token oauth_token to be stored.
+	 * @param string $access_token oauth_token to be stored.
 	 * @param string $client_id Client identifier to be stored.
 	 * @param int $user_id User identifier to be stored.
 	 * @param int $expires Expiration to be stored as a Unix timestamp.
 	 * @param string $scope (optional) Scopes to be stored in space-separated string.
-	 *
-	 * @ingroup oauth2_section_4
 	 */
-	public function setAccessToken($oauth_token, $client_id, $user_id, $expires, $scope = null) {
+	public function setAccessToken($access_token, $client_id, $user_id, $expires, $scope = null) {
 
 		$expires = date('Y-m-d H:i:s', $expires);
 		$member_id = intval($user_id);
 		$token = compact('access_token', 'client_id', 'member_id', 'expires', 'scope');
-		if ($this->getAccessToken($oauth_token)) {
-			$res = $this->db->update('oauth_access_tokens', $token, 'access_token="' . $oauth_token . '"');
+		if ($this->getAccessToken($access_token)) {
+			$this->db->update('oauth_access_tokens', $token, 'access_token="' . $access_token . '"');
 		} else {
-			$res = $this->db->insert('oauth_access_tokens', $token);
+			$this->db->insert('oauth_access_tokens', $token);
 		}
-		return $res;
 	}
 
 	/**
@@ -85,7 +82,7 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 *
 	 * Required for OAuth2::GRANT_TYPE_AUTH_CODE.
 	 *
-	 * @param string $c Authorization code to be check with.
+	 * @param string $authorization_code Authorization code to be check with.
 	 * @return array An associative array as below, and NULL if the code is invalid
 	 * @code
 	 * return array(
@@ -97,19 +94,20 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 * );
 	 * @endcode
 	 * @see http://tools.ietf.org/html/rfc6749#section-4.1
-	 * @ingroup oauth2_section_4
 	 */
-	public function getAuthorizationCode($c) {
+	public function getAuthorizationCode($authorization_code) {
 		$code = $this->db->buildAndFetch(array(
 				'select' => '*',
 				'from' => array('oauth_authorization_codes' => 'code'),
-				'where' => 'code.authorization_code = "' . $c . '"'
+				'where' => 'code.authorization_code = "' . $authorization_code . '"'
 			)
 		);
 		if ($code) {
 			// convert date string back to timestamp
 			$code['expires'] = strtotime($code['expires']);
+			$code['user_id'] = $code['member_id'];
 		}
+
 		return $code;
 	}
 
@@ -131,13 +129,12 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 * @param int $expires Expiration to be stored as a Unix timestamp.
 	 * @param string $scope
 	 * (optional) Scopes to be stored in space-separated string.
-	 *
-	 * @ingroup oauth2_section_4
 	 */
 	public function setAuthorizationCode($authorization_code, $client_id, $user_id, $redirect_uri, $expires, $scope = null) {
 		if (func_num_args() > 6) {
 			// we are calling with an id token
-			return call_user_func_array(array($this, 'setAuthorizationCodeWithIdToken'), func_get_args());
+			call_user_func_array(array($this, 'setAuthorizationCodeWithIdToken'), func_get_args());
+			return;
 		}
 
 		// convert expires to datestring
@@ -147,26 +144,24 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 
 		// if it exists, update it.
 		if ($this->getAuthorizationCode($authorization_code)) {
-			$res = $this->db->update('oauth_authorization_codes', $code, 'authorization_code="' . $code . '"');
+			$this->db->update('oauth_authorization_codes', $code, 'authorization_code="' . $authorization_code . '"');
 		} else {
-			$res = $this->db->insert('oauth_authorization_codes', $code);
+			$this->db->insert('oauth_authorization_codes', $code);
 		}
-		return $res;
 	}
 
-	private function setAuthorizationCodeWithIdToken($c, $client_id, $user_id, $redirect_uri, $expires, $scope = null, $id_token = null) {
+	private function setAuthorizationCodeWithIdToken($authorization_code, $client_id, $user_id, $redirect_uri, $expires, $scope = null, $id_token = null) {
 		// convert expires to datestring
 		$member_id = intval($user_id);
 		$expires = date('Y-m-d H:i:s', $expires);
-		$code = compact('c', 'client_id', 'member_id', 'redirect_uri', 'expires', 'scope', 'id_token');
+		$code = compact('authorization_code', 'client_id', 'member_id', 'redirect_uri', 'expires', 'scope', 'id_token');
 
 		// if it exists, update it.
-		if ($this->getAuthorizationCode($c)) {
-			$res = $this->db->update('oauth_authorization_codes', $code, 'authorization_code="' . $code . '"');
+		if ($this->getAuthorizationCode($authorization_code)) {
+			$this->db->update('oauth_authorization_codes', $code, 'authorization_code="' . $authorization_code . '"');
 		} else {
-			$res = $this->db->insert('oauth_authorization_codes', $code);
+			$this->db->insert('oauth_authorization_codes', $code);
 		}
-		return $res;
 	}
 
 	/**
@@ -192,7 +187,6 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 * @param string $client_secret (optional) If a secret is required, check that they've given the right one.
 	 * @return boolean TRUE if the client credentials are valid, and MUST return FALSE if it isn't.
 	 * @see http://tools.ietf.org/html/rfc6749#section-3.1
-	 * @ingroup oauth2_section_3
 	 */
 	public function checkClientCredentials($client_id, $client_secret = null) {
 
@@ -218,7 +212,6 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 *
 	 * @see http://tools.ietf.org/html/rfc6749#section-2.3
 	 * @see https://github.com/bshaffer/oauth2-server-php/issues/257
-	 * @ingroup oauth2_section_2
 	 */
 	public function isPublicClient($client_id) {
 
@@ -255,7 +248,6 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 *     "scope"        => SCOPE,             // OPTIONAL the scopes allowed for this client
 	 * );
 	 * @endcode
-	 * @ingroup oauth2_section_4
 	 */
 	public function getClientDetails($client_id) {
 		return $this->db->buildAndFetch(array(
@@ -293,8 +285,6 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	 *
 	 * @return boolean TRUE if the grant type is supported by this client identifier, and
 	 *                 FALSE if it isn't.
-	 *
-	 * @ingroup oauth2_section_4
 	 */
 	public function checkRestrictedGrantType($client_id, $grant_type) {
 		$details = $this->getClientDetails($client_id);
@@ -305,5 +295,82 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 		}
 		// if grant_types are not defined, then none are restricted
 		return true;
+	}
+
+	/**
+	 * Grant refresh access tokens.
+	 *
+	 * Retrieve the stored data for the given refresh token.
+	 *
+	 * Required for OAuth2::GRANT_TYPE_REFRESH_TOKEN.
+	 *
+	 * Returns an associative array as below, and NULL if the refresh_token is
+	 * invalid:
+	 * - refresh_token: Refresh token identifier.
+	 * - client_id: Client identifier.
+	 * - user_id: User identifier.
+	 * - expires: Expiration unix timestamp, or 0 if the token doesn't expire.
+	 * - scope: (optional) Scope values in space-separated string.
+	 *
+	 * @see http://tools.ietf.org/html/rfc6749#section-6
+	 * @param string $refresh_token Refresh token to be check with.
+	 * @return array
+	 */
+	public function getRefreshToken($refresh_token) {
+
+		$token = $this->db->buildAndFetch(array(
+				'select' => '*',
+				'from' => array('oauth_refresh_tokens' => 'token'),
+				'where' => 'token.refresh_token = "' . $refresh_token . '"',
+			)
+		);
+		if ($token) {
+			// convert date string back to timestamp
+			$token['expires'] = strtotime($token['expires']);
+			$token['user_id'] = $token['member_id'];
+		}
+		return $token;
+	}
+
+	/**
+	 * Take the provided refresh token values and store them somewhere.
+	 *
+	 * This function should be the storage counterpart to getRefreshToken().
+	 *
+	 * If storage fails for some reason, we're not currently checking for
+	 * any sort of success/failure, so you should bail out of the script
+	 * and provide a descriptive fail message.
+	 *
+	 * Required for OAuth2::GRANT_TYPE_REFRESH_TOKEN.
+	 *
+	 * @param string $refresh_token Refresh token to be stored.
+	 * @param string $client_id Client identifier to be stored.
+	 * @param string $user_id User identifier to be stored.
+	 * @param string $expires Expiration timestamp to be stored. 0 if the token doesn't expire.
+	 * @param string $scope (optional) Scopes to be stored in space-separated string.
+	 */
+	public function setRefreshToken($refresh_token, $client_id, $user_id, $expires, $scope = null) {
+
+		$expires = date('Y-m-d H:i:s', $expires);
+		$member_id = intval($user_id);
+		$token = compact('refresh_token', 'client_id', 'member_id', 'expires', 'scope');
+		$this->db->insert('oauth_refresh_tokens', $token);
+	}
+
+	/**
+	 * Expire a used refresh token.
+	 *
+	 * This is not explicitly required in the spec, but is almost implied.
+	 * After granting a new refresh token, the old one is no longer useful and
+	 * so should be forcibly expired in the data store so it can't be used again.
+	 *
+	 * If storage fails for some reason, we're not currently checking for
+	 * any sort of success/failure, so you should bail out of the script
+	 * and provide a descriptive fail message.
+	 *
+	 * @param string $refresh_token Refresh token to be expirse.
+	 */
+	public function unsetRefreshToken($refresh_token) {
+		$this->db->delete('oauth_refresh_tokens', 'refresh_token="' . $refresh_token . '"');
 	}
 }

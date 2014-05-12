@@ -32,17 +32,3 @@ $TABLE[] = 'CREATE TABLE oauth_authorization_codes (
 	scope VARCHAR(2000),
 	CONSTRAINT pk_auth_code PRIMARY KEY (authorization_code)
 );';
-
-$TABLE[] = 'CREATE TABLE oauth_refresh_tokens (
-	refresh_token VARCHAR(40) NOT NULL,
-	client_id VARCHAR(80) NOT NULL,
-	member_id MEDIUMINT(8) NOT NULL,
-	expires TIMESTAMP NOT NULL,
-	scope VARCHAR(2000),
-	CONSTRAINT pk_refresh_token PRIMARY KEY (refresh_token)
-);';
-
-$TABLE[] = 'CREATE TABLE oauth_scopes (
-	scope TEXT, is_default BOOLEAN
-);';
-
