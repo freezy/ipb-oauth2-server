@@ -63,7 +63,19 @@ class admin_oauth2_manager_clients extends ipsCommand {
 	private function ls() {
 
 		$clients = array();
-		$this->DB->build(array('select' => '*', 'from' => 'oauth_clients', 'order' => 'client_name'));
+		$this->DB->build(array(
+			'select' => 'client.client_name, client.client_id, client.client_secret, client.homepage_uri',
+			'from' => array('oauth_clients' => 'client'),
+			'add_join' => array(
+				array(
+					'select' => 'count(member.client_id) AS num_members',
+					'from' => array('oauth_members' => 'member'),
+					'where' => 'client.client_id = member.client_id',
+					'type' => 'left',
+				)
+			),
+			'group' => 'client.client_id, client.client_secret, client.homepage_uri',
+			'order' => 'client.client_name'));
 		$this->DB->execute();
 		while ($row = $this->DB->fetch()) {
 			$clients[] = $row;

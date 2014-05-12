@@ -373,4 +373,37 @@ class Storage implements AccessTokenInterface, ClientCredentialsInterface, Autho
 	public function unsetRefreshToken($refresh_token) {
 		$this->db->delete('oauth_refresh_tokens', 'refresh_token="' . $refresh_token . '"');
 	}
+
+	/**
+	 * Checks whether a member already confirmed OAuth access for a given application.
+	 *
+	 * @param string $client_id Client ID of your OAuth2 application
+	 * @param string $user_id Member ID from IPB
+	 * @param string $scope Scopes, separed by space (still unused)
+	 * @return boolean
+	 */
+	public function hasAuthorization($client_id, $user_id, $scope) {
+		$member_id = intval($user_id);
+		$ret = $this->db->buildAndFetch(array(
+				'select' => '*',
+				'from' => array('oauth_members' => 'member'),
+				'where' => 'member.client_id="' . $client_id . '" AND member.member_id=' . $member_id
+			)
+		);
+		return $ret != null;
+	}
+
+	/**
+	 * Sets Authorization for a given member and application.
+	 *
+	 * @param string $client_id Client ID of your OAuth2 application
+	 * @param string $user_id Member ID from IPB
+	 * @param string $scope Scopes, separed by space (still unused)
+	 */
+	public function setAuthorization($client_id, $user_id, $scope) {
+		$created_at = date('Y-m-d H:i:s');
+		$member_id = intval($user_id);
+		$row = compact('client_id', 'member_id', 'created_at', 'scope');
+		$this->db->insert('oauth_members', $row);
+	}
 }
