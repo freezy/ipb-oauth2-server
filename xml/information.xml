@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <information>
-	<data>
-		<name>OAuth2 Server</name>
-		<public_name>OAuth2 Server</public_name>
-		<hide_tab>1</hide_tab>
-		<author>freezy</author>
-		<description>Allows other sites to authenticate with IP.Board users.</description>
-		<disabledatinstall>0</disabledatinstall>
-		<global_caches/>
-		<website>https://github.com/freezy/ipb-oauth2-server</website>
-		<update_check/>
-		<templategroups/>
-	</data>
+  <data>
+    <name>OAuth2 Server</name>
+    <public_name>OAuth2 Server</public_name>
+    <hide_tab>1</hide_tab>
+    <author>freezy</author>
+    <description>Allows other sites to authenticate with IP.Board users.</description>
+    <disabledatinstall>0</disabledatinstall>
+    <global_caches/>
+    <website>https://github.com/freezy/ipb-oauth2-server</website>
+    <update_check/>
+    <templategroups/>
+  </data>
 </information>
