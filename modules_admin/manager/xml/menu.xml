@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+	<tabitems>
+		<item>
+			<title>List Applications</title>
+			<subitems>
+				<subitem>
+					<subitemtitle>List Applications</subitemtitle>
+					<subitemlang>myapp_somelink</subitemlang>
+					<subsection>clients</subsection>
+					<subitemurl>do=list</subitemurl>
+					<subitemrolekey></subitemrolekey>
+					<subisredirect>0</subisredirect>
+				</subitem>
+			</subitems>
+		</item>
+		<item>
+			<title>Create Application</title>
+			<subitems>
+				<subitem>
+					<subitemtitle>Create Application</subitemtitle>
+					<subitemlang>myapp_somelink</subitemlang>
+					<subsection>clients</subsection>
+					<subitemurl>do=create</subitemurl>
+					<subitemrolekey></subitemrolekey>
+					<subisredirect>0</subisredirect>
+				</subitem>
+			</subitems>
+		</item>
+	</tabitems>
+</menu>
