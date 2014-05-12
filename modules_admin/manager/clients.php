@@ -175,6 +175,10 @@ class admin_oauth2_manager_clients extends ipsCommand {
 			$this->registry->output->global_message = $this->lang->words['o_no_redirect'];
 			return $this->form($type);
 		}
+		if (!$homepage_logo) {
+			$this->registry->output->global_message = $this->lang->words['o_no_logo'];
+			return $this->form($type);
+		}
 
 		if ($type == 'update') {
 			$client = $this->DB->buildAndFetch(array('select' => '*', 'from' => 'oauth_clients', 'where' => 'client_id="' . $client_id . '"'));

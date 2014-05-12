@@ -31,6 +31,7 @@ $lang = array(
 	'o_created' => 'New OAuth2 Application has been successfully created.',
 	'o_updated' => 'OAuth2 Application has been successfully updated.',
 	'o_no_redirect' => 'You must enter an Authorization callback URL.',
+	'o_no_logo' => 'You must provide a logo for your application.',
 	'o_edit' => 'Edit',
 	'o_delete' => 'Delete',
 	'o_client404' => 'Could not find Application for given client_id.',
