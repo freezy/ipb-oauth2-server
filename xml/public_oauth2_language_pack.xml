@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<languageexport>
+  <languagegroup>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>public_lang</word_pack>
+      <word_key>o_authorize_application</word_key>
+      <word_default>Authorize Application</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>public_lang</word_pack>
+      <word_key>o_would_like_to_use</word_key>
+      <word_default>would like your permission to access your account.</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>public_lang</word_pack>
+      <word_key>o_deny</word_key>
+      <word_default>Deny</word_default>
+    </lang>
+  </languagegroup>
+</languageexport>

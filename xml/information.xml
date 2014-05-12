@@ -10,6 +10,8 @@
     <global_caches/>
     <website>https://github.com/freezy/ipb-oauth2-server</website>
     <update_check/>
-    <templategroups/>
+	  <templategroups>
+		  <template match="exact">skin_oauth2</template>
+	  </templategroups>
   </data>
 </information>

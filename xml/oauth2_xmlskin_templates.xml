@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates application="oauth2" templategroups="a:1:{s:11:&quot;skin_oauth2&quot;;s:5:&quot;exact&quot;;}">
+  <templategroup group="skin_oauth2">
+    <template>
+      <template_group>skin_oauth2</template_group>
+      <template_content><![CDATA[<!--no data in this master skin-->]]></template_content>
+      <template_name>authorize</template_name>
+      <template_data>$client</template_data>
+      <template_removable>0</template_removable>
+      <template_user_added>0</template_user_added>
+      <template_user_edited>0</template_user_edited>
+      <template_master_key>root</template_master_key>
+    </template>
+  </templategroup>
+</templates>

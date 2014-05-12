@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<languageexport>
+  <languagegroup>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_clients</word_key>
+      <word_default>OAuth2 Applications</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_client_name</word_key>
+      <word_default>Name</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_client_name_info</word_key>
+      <word_default>Something users will recognize and trust</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_client_url</word_key>
+      <word_default>URL</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_client_numusers</word_key>
+      <word_default>Number of members</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_no_clients</word_key>
+      <word_default>No OAuth2 applications.</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_new_client</word_key>
+      <word_default>Create new OAuth2 Application</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_update_client</word_key>
+      <word_default>Update OAuth2 Application</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_create</word_key>
+      <word_default>Create Application</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_update</word_key>
+      <word_default>Update Application</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_new_client_short</word_key>
+      <word_default>New Application</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_update_client_short</word_key>
+      <word_default>Update Application</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_client_id</word_key>
+      <word_default>Client ID</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_client_secret</word_key>
+      <word_default>Client Secret</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_info</word_key>
+      <word_default>You may create OAuth2 clients so third-party applications can use IP.Board for authentication.</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_redirect_uri</word_key>
+      <word_default>Authorization callback URL</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_redirect_uri_info</word_key>
+      <word_default><![CDATA[Your application's callback URL]]></word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_homepage_uri</word_key>
+      <word_default>Homepage URL</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_homepage_uri_info</word_key>
+      <word_default>The full URL to your application homepage</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_homepage_description</word_key>
+      <word_default>Application Description</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_homepage_description_info</word_key>
+      <word_default>This is displayed to all potential users of your application</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_homepage_logo</word_key>
+      <word_default>Homepage Logo URL</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_homepage_logo_info</word_key>
+      <word_default>An URL to the logo of your site, preferably in square size, at least 100x100.</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_please_enter_name</word_key>
+      <word_default>Please enter a name.</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_no_id</word_key>
+      <word_default>No Client ID submitted.</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_no_secret</word_key>
+      <word_default>No Client Secret submitted.</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_created</word_key>
+      <word_default>New OAuth2 Application has been successfully created.</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_updated</word_key>
+      <word_default>OAuth2 Application has been successfully updated.</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_no_redirect</word_key>
+      <word_default>You must enter an Authorization callback URL.</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_no_logo</word_key>
+      <word_default>You must provide a logo for your application.</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_edit</word_key>
+      <word_default>Edit</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_delete</word_key>
+      <word_default>Delete</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_client404</word_key>
+      <word_default>Could not find Application for given client_id.</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_whatclient</word_key>
+      <word_default>You must provide a Client ID.</word_default>
+    </lang>
+    <lang>
+      <word_app>oauth2</word_app>
+      <word_pack>admin_lang</word_pack>
+      <word_key>o_deleted</word_key>
+      <word_default>Application has successfully been deleted.</word_default>
+    </lang>
+  </languagegroup>
+</languageexport>

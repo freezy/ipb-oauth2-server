@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates application="oauth2" templategroups="a:1:{s:11:&quot;skin_oauth2&quot;;s:5:&quot;exact&quot;;}">
+  <templategroup group="skin_oauth2">
+    <template>
+      <template_group>skin_oauth2</template_group>
+      <template_content><![CDATA[<img src='{$client['homepage_logo']}' class='ipsUserPhoto ipsUserPhoto_medium left' /></a>
+<div class='ipsBox_withphoto'>
+	<h1 class='ipsType_pagetitle'>{$this->lang->words['o_authorize_application']}</h1>
+	<h2 class='ipsType_subtitle'><a href="{$client['homepage_uri']}" target="_blank">{$client['client_name']}</a> {$this->lang->words['o_would_like_to_use']}</h2>
+	<p>&nbsp;</p>
+	<form method="post">
+		<input type="submit" class="input_submit" name="authorized" value="{$this->lang->words['o_authorize_application']}"/>
+		<input type="submit" class="input_submit ipsButton_secondary" name="authorized" value="{$this->lang->words['o_deny']}"/>
+	</form>
+	<p>&nbsp;</p>
+</div>]]></template_content>
+      <template_name>authorize</template_name>
+      <template_data>$client</template_data>
+      <template_removable>0</template_removable>
+      <template_user_added>0</template_user_added>
+      <template_user_edited>0</template_user_edited>
+      <template_master_key>root</template_master_key>
+    </template>
+  </templategroup>
+</templates>
