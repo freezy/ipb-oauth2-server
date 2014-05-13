@@ -42,7 +42,7 @@ Name | Type | Description
 -----|------|---------------
 `client_id`|`string` | **Required**. The client ID generated when creating the application in AdminCP.
 `client_secret`|`string` | **Required**. The client secret generated when creating the application in AdminCP.
-`code`|`string` | **Required**. The code you received as a response to [Step 1](#redirect-users-to-request-ip.board-access).
+`code`|`string` | **Required**. The code you received as a response to [Step 1](#1-redirect-users-to-request-ipboard-access).
 `redirect_uri`|`string` | The URL in your app where users will be sent after authorization.
 
 ### Response
@@ -70,9 +70,9 @@ For example, in curl you can set the Authorization header like this:
 
 ## Credits
 
-	* [OAuth 2.0 Server for PHP](http://bshaffer.github.io/oauth2-server-php-docs/), an excellent
-	  OAuth2 library in PHP
-	* [IPB-oauth2server](https://github.com/Erwane/IPB-oauth2server) for some inspiration
+* [OAuth 2.0 Server for PHP](http://bshaffer.github.io/oauth2-server-php-docs/), an excellent
+  OAuth2 library in PHP
+* [IPB-oauth2server](https://github.com/Erwane/IPB-oauth2server) for some inspiration
 
 ## License
 
