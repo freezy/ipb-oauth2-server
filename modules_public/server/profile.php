@@ -30,7 +30,10 @@ class public_oauth2_server_profile extends ipsCommand {
 				'displayName' => $member['members_display_name'],
 				'email' => $member['email'],
 				'profileUrl' => $this->settings['board_url'] . '/index.php?showuser=' . $token['member_id'],
-				'avatar' => array(
+
+			);
+			if ($member['pp_main_photo']) {
+				$profile['avatar'] = array(
 					'thumb' => array(
 						'url' => $this->settings['upload_url'] . '/' . $member['pp_thumb_photo'],
 						'width' => $member['pp_thumb_width'],
@@ -41,8 +44,8 @@ class public_oauth2_server_profile extends ipsCommand {
 						'width' => $member['pp_main_width'],
 						'height' => $member['pp_main_height']
 					),
-				),
-			);
+				);
+			}
 			echo json_encode($profile);
 		} else {
 			http_response_code(404);
