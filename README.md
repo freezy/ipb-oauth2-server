@@ -8,6 +8,19 @@ Developers accessing this API need to have their application registered via IP.B
 panel. This can be done by navigating through ``Other Apps`` -> ``OAuth2 Server``. There you can list,
 create, update and delete your applications.
 
+## Installation
+
+1. Download the latest version [here](https://github.com/freezy/ipb-oauth2-server/releases)
+2. Unzip the downloaded archive to your IP.Board folder into ``admin/applications_addon/other/``
+3. Rename the extracted ``ipb-oauth2-server-x.y.z`` folder to ``oauth2``. To validate, check that
+   ``admin/applications_addon/other/oauth2/app_class_oauth2.php`` exists.
+4. Open IP.Board's AdminCP and navigate to *Manage Applications & Modules*
+5. OAuth2 Server should appear in the top right corner.
+6. Click *Install*
+
+You will then be able to configure your OAuth2 clients under *Other Apps / OAuth2 Server*. This
+was tested with IP.Board 3.4.6.
+
 ## Web Application Flow
 
 In all examples, we assume that your board is running at ``https://ipboard/index.php``, of course you
