@@ -45,11 +45,8 @@ class public_oauth2_server_profile extends ipsCommand {
 			);
 			echo json_encode($profile);
 		} else {
-			echo json_encode(array(
-				'success' => false,
-				'message' => 'No such member with ID ' . $token['member_id']. '.'
-			));
+			http_response_code(404);
+			die;
 		}
-
 	}
 }

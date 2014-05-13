@@ -29,7 +29,7 @@ class Server {
 		$server->addGrantType(new AuthorizationCode($storage));
 
 		// create the grant type
-		$server->addGrantType(new RefreshToken($storage));
+		//$server->addGrantType(new RefreshToken($storage));
 
 
 

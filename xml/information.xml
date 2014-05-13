@@ -5,7 +5,7 @@
     <public_name>OAuth2 Server</public_name>
     <hide_tab>1</hide_tab>
     <author>freezy</author>
-    <description>Allows other sites to authenticate with IP.Board users.</description>
+    <description>Allows other sites to authenticate with IP.Board members via OAuth2.</description>
     <disabledatinstall>0</disabledatinstall>
     <global_caches/>
     <website>https://github.com/freezy/ipb-oauth2-server</website>
