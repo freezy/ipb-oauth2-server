@@ -11,7 +11,7 @@ class public_oauth2_server_authorize extends ipsCommand {
 
 		// enforce login
 		if (!$member_id) {
-			$this->registry->output->silentRedirect($this->settings['base_url'] . 'app=core&module=global&section=login&referer=' . urlencode('?' . $this->settings['query_string_real']));
+			$this->registry->output->silentRedirect($this->settings['base_url'] . 'app=core&module=global&section=login&referer=' . urlencode('?' . str_replace('?', '&', $_SERVER['QUERY_STRING'])));
 			return;
 		}
 
