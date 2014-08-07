@@ -20,7 +20,7 @@ class Server {
 	public static function createServer(Storage $storage) {
 
 		// setup server
-		$server = new \OAuth2\Server($storage);
+		$server = new \OAuth2\Server($storage, array('enforce_state' => false));
 
 		// add the "client credentials" grant type (it is the simplest of the grant types)
 		$server->addGrantType(new ClientCredentials($storage));
@@ -30,8 +30,6 @@ class Server {
 
 		// create the grant type
 		//$server->addGrantType(new RefreshToken($storage));
-
-
 
 		return $server;
 	}
